@@ -6,7 +6,7 @@
 #[x]: Lista de notas do sped que não existem no sefaz
 #[x]: Lista de notas no sefaz que nao existem no sped
 #[x]: Lista de notas no sefaz e no sped
-#[ ]: Comparar valores totais das notas sefaz com soma do icms dos produtos do sped conforme lista de notas que estao nos dois arquivos
+#[x]: Comparar valores totais das notas sefaz com soma do icms dos produtos do sped conforme lista de notas que estao nos dois arquivos
 #[ ]: Relatório em HTML com os comparativos
 #[ ]: Salvar relatório HTML no desktop e abrir o arquivo após a conclusão do programa
 #[ ]: Testes

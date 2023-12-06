@@ -43,7 +43,8 @@ def getNotasFromSped(arquivo_sped):
                 numero_nota = colunas[coluna_numero_nota] if len(colunas) > coluna_numero_nota else None
                 nota_atual = {
                     'numero': numero_nota,
-                    'produtos': []
+                    'produtos': [],
+                    'total_icms_produtos': 0
                 }
 
                 if nota_atual not in notas and nota_atual:
@@ -60,6 +61,7 @@ def getNotasFromSped(arquivo_sped):
                         'valor_total': valor_total,
                         'icms': icms
                     })
+                    nota_atual['total_icms_produtos'] += float(icms.replace(',', '.'))
 
     return notas
 
