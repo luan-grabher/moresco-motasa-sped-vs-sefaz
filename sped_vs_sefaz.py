@@ -4,7 +4,7 @@
 from sefaz import getArquivoSefazFromUser, getNotasFromSefaz
 from easygui import msgbox
 
-from sped import getArquivoSpedFromUser
+from sped import getArquivoSpedFromUser, getNotasFromSped
 
 def sped_vs_sefaz():
     try:
@@ -19,7 +19,7 @@ def sped_vs_sefaz():
             exit()
 
         notas_sefaz = getNotasFromSefaz(arquivo_sefaz)
-        print(notas_sefaz)
+        notas_sped = getNotasFromSped(arquivo_sped)
 
     except Exception as e:
         #TODO: Exibir erro para o usuário
