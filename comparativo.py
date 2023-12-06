@@ -1,5 +1,5 @@
 import tqdm
-from sefaz import getNotasFromSefaz
+from sefaz import getNotaSefaz, getNotasFromSefaz
 
 from sped import getNotaSped, getNotasFromSped
 
@@ -21,6 +21,13 @@ def getComparacaoSefazSped(notas_sefaz, notas_sped):
                 'sped': nota_sped
             })
 
+    for nota_sped in tqdm.tqdm(notas_sped, desc='Comparando notas SPED e SEFAZ'):
+        chave_nfe = nota_sped['numero']
+        nota_sefaz = getNotaSefaz(notas_sefaz, chave_nfe)
+
+        if nota_sefaz.empty:
+            notas_sped_que_nao_estao_no_sefaz.append(nota_sped)
+
     return {
         'notas_sped_que_nao_estao_no_sefaz': notas_sped_que_nao_estao_no_sefaz,
         'notas_sefaz_que_nao_estao_no_sped': notas_sefaz_que_nao_estao_no_sped,
@@ -37,4 +44,4 @@ if __name__ == '__main__':
 
     comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
-    print(comparacao['notas_sefaz_e_sped'])
+    print(comparacao['notas_sped_que_nao_estao_no_sefaz'])
