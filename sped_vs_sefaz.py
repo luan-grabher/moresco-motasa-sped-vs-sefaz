@@ -1,10 +1,8 @@
-
-
-
+from comparativo import getComparacaoSefazSped
 from sefaz import getArquivoSefazFromUser, getNotasFromSefaz
 from easygui import msgbox
-
 from sped import getArquivoSpedFromUser, getNotasFromSped
+import traceback
 
 def sped_vs_sefaz():
     try:
@@ -21,9 +19,12 @@ def sped_vs_sefaz():
         notas_sefaz = getNotasFromSefaz(arquivo_sefaz)
         notas_sped = getNotasFromSped(arquivo_sped)
 
+        comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
+
     except Exception as e:
-        #TODO: Exibir erro para o usuário
-        print(e)
+        msgbox('Ocorreu um erro inesperado, verifique o log para mais detalhes')
+        print(traceback.format_exc())
+        input('Pressione qualquer tecla para sair')
         exit()
 
 if __name__ == '__main__':
