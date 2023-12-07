@@ -61,7 +61,7 @@ def getNotasFromSped(arquivo_sped):
                         'valor_total': valor_total,
                         'icms': icms
                     })
-                    nota_atual['total_icms_produtos'] += float(icms.replace(',', '.'))
+                    nota_atual['total_icms_produtos'] += round(float(icms.replace(',', '.')), 2)
 
     return notas
 

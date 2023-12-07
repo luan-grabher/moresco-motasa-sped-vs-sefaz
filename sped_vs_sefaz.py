@@ -1,4 +1,5 @@
 from comparativo import getComparacaoSefazSped
+from relatorio import createRelatorio
 from sefaz import getArquivoSefazFromUser, getNotasFromSefaz
 from easygui import msgbox
 from sped import getArquivoSpedFromUser, getNotasFromSped
@@ -20,6 +21,8 @@ def sped_vs_sefaz():
         notas_sped = getNotasFromSped(arquivo_sped)
 
         comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
+
+        createRelatorio(comparacao)
 
     except Exception as e:
         msgbox('Ocorreu um erro inesperado, verifique o log para mais detalhes')
