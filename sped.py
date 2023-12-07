@@ -66,7 +66,8 @@ def getNotasFromSped(arquivo_sped):
     return notas
 
 def getNotaSped(notas_sped, numero_nota):
-    return list(filter(lambda nota: nota['numero'] == numero_nota, notas_sped))[0]
+    notas_sped = list(filter(lambda nota: nota['numero'] == numero_nota, notas_sped))
+    return notas_sped[0] if len(notas_sped) > 0 else None
 
 if __name__ == '__main__':
     arquivo_sped = './downloads/sped_teste.txt'

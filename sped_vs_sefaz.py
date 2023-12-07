@@ -7,7 +7,7 @@ import traceback
 
 def sped_vs_sefaz():
     try:
-        arquivo_sefaz = getArquivoSefazFromUser()
+        arquivo_sefaz = getArquivoSefazFromUser(selecionar_pasta=True)
         if not arquivo_sefaz:
             msgbox('Nenhum arquivo SEFAZ selecionado')
             exit()
@@ -23,6 +23,8 @@ def sped_vs_sefaz():
         comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
         createRelatorio(comparacao)
+
+        msgbox('Relatório criado com sucesso na sua área de trabalho e já abri ele para você')
 
     except Exception as e:
         msgbox('Ocorreu um erro inesperado, verifique o log para mais detalhes')

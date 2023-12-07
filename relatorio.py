@@ -147,9 +147,9 @@ def createRelatorio(comparacao):
     html += '</body>'
     html += '</html>'
     
-    #save on desktop
+    nome_relatorio = 'relatorio_comparativo_sefaz_sped.html'
     desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-    arquivo_relatorio = os.path.join(desktop, 'relatorio.html')
+    arquivo_relatorio = os.path.join(desktop, nome_relatorio)
     with open(arquivo_relatorio, 'w') as arquivo:
         arquivo.write(html)
 
