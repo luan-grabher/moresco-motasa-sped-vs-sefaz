@@ -18,7 +18,7 @@ def sped_vs_sefaz():
             exit()
 
         notas_sefaz = getNotasFromSefaz(arquivo_sefaz)
-        notas_sped = getNotasFromSped(arquivo_sped)
+        notas_sped, cnpjs_de_entrada = getNotasFromSped(arquivo_sped)
 
         comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 

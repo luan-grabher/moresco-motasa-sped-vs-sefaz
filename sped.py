@@ -24,6 +24,7 @@ def getNotasFromSped(arquivo_sped):
     codigo_produto = 'C190'
 
     coluna_codigo_linha = 1
+    coluna_tipo_nota = 2
     coluna_numero_nota = 9
     coluna_cfop = 3
     coluna_valor_total = 5
@@ -31,9 +32,10 @@ def getNotasFromSped(arquivo_sped):
 
     notas = []
     nota_atual = None
+
+    cnpjs_de_entrada = []
     
-    encoding_type = get_encoding_type(arquivo_sped)
-    
+    encoding_type = get_encoding_type(arquivo_sped)    
     with codecs.open(arquivo_sped, 'r', encoding=encoding_type, errors='ignore') as sped:
         for linha in tqdm.tqdm(sped.readlines(), desc='Lendo arquivo SPED'):
             colunas = linha.split(separador)
@@ -41,13 +43,30 @@ def getNotasFromSped(arquivo_sped):
 
             if codigo_linha == codigo_nota:
                 numero_nota = colunas[coluna_numero_nota] if len(colunas) > coluna_numero_nota else None
+
+                tipo_nota = colunas[coluna_tipo_nota] if len(colunas) > coluna_tipo_nota else None
+                is_nota_entrada = tipo_nota == '0'
+                cnpj_from_numero_nota = numero_nota[6:20]
+
+                if is_nota_entrada and cnpj_from_numero_nota not in cnpjs_de_entrada:
+                    is_cnpj_in_cnpjs_de_entrada = list(filter(lambda cnpj: cnpj == cnpj_from_numero_nota, cnpjs_de_entrada))
+                    if len(is_cnpj_in_cnpjs_de_entrada) == 0:
+                        cnpjs_de_entrada.append({
+                            'cnpj': cnpj_from_numero_nota,
+                            'notas': [ numero_nota ]
+                        })
+                    else:
+                        cnpj_de_entrada = is_cnpj_in_cnpjs_de_entrada[0]
+                        cnpj_de_entrada['notas'].append(numero_nota)                        
+
                 nota_atual = {
                     'numero': numero_nota,
                     'produtos': [],
                     'total_icms_produtos': 0
                 }
 
-                if nota_atual not in notas and nota_atual:
+                is_nota_in_notas = list(filter(lambda nota: nota['numero'] == numero_nota, notas))
+                if len(is_nota_in_notas) == 0:
                     notas.append(nota_atual)
             
             elif codigo_linha == codigo_produto:
@@ -63,7 +82,7 @@ def getNotasFromSped(arquivo_sped):
                     })
                     nota_atual['total_icms_produtos'] += round(float(icms.replace(',', '.')), 2)
 
-    return notas
+    return notas, cnpjs_de_entrada
 
 def getNotaSped(notas_sped, numero_nota):
     notas_sped = list(filter(lambda nota: nota['numero'] == numero_nota, notas_sped))
@@ -71,9 +90,6 @@ def getNotaSped(notas_sped, numero_nota):
 
 if __name__ == '__main__':
     arquivo_sped = './downloads/sped_teste.txt'
-    notas = getNotasFromSped(arquivo_sped)
-
-    nota_validadora = '43231097834188000105550030004688701004980591'
-    nota = getNotaSped(notas, nota_validadora)
+    notas, cnpjs_de_entrada = getNotasFromSped(arquivo_sped)
     
-    print(nota)
+    print(cnpjs_de_entrada)

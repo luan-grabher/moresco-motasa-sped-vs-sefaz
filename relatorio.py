@@ -162,7 +162,7 @@ if __name__ == '__main__':
     arquivo_teste_sped = './downloads/sped_teste.txt'
 
     notas_sefaz = getNotasFromSefaz(arquivo_teste_sefaz)
-    notas_sped = getNotasFromSped(arquivo_teste_sped)
+    notas_sped, cnpjs_de_entrada = getNotasFromSped(arquivo_teste_sped)
 
     comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
