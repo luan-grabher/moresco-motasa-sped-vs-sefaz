@@ -1,5 +1,4 @@
 from comparativo import getComparacaoSefazSped
-from consulta_optantes_simples_nacional import getCnpjsEntradaOptantesSimplesNacional
 from relatorio import createRelatorio
 from sefaz import getArquivoSefazFromUser, getNotasFromSefaz
 from easygui import msgbox
