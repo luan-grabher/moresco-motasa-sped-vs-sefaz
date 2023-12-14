@@ -120,7 +120,7 @@ def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
 
     return html
 
-def createRelatorio(comparacao):
+def createRelatorio(comparacao, cnpjs_de_entrada):
     notas_sped_que_nao_estao_no_sefaz = comparacao['notas_sped_que_nao_estao_no_sefaz']
     notas_sefaz_que_nao_estao_no_sped = comparacao['notas_sefaz_que_nao_estao_no_sped']
     notas_sefaz_e_sped = comparacao['notas_sefaz_e_sped']

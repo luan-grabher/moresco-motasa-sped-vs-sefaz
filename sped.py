@@ -57,7 +57,8 @@ def getNotasFromSped(arquivo_sped):
                         })
                     else:
                         cnpj_de_entrada = is_cnpj_in_cnpjs_de_entrada[0]
-                        cnpj_de_entrada['notas'].append(numero_nota)                        
+                        cnpj_de_entrada['notas'].append(numero_nota)       
+                
 
                 nota_atual = {
                     'numero': numero_nota,
@@ -92,4 +93,4 @@ if __name__ == '__main__':
     arquivo_sped = './downloads/sped_teste.txt'
     notas, cnpjs_de_entrada = getNotasFromSped(arquivo_sped)
     
-    print(cnpjs_de_entrada)
+    print(len(cnpjs_de_entrada))

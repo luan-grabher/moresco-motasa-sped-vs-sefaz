@@ -1,4 +1,5 @@
 from comparativo import getComparacaoSefazSped
+from consulta_optantes_simples_nacional import getCnpjsEntradaOptantesSimplesNacional
 from relatorio import createRelatorio
 from sefaz import getArquivoSefazFromUser, getNotasFromSefaz
 from easygui import msgbox
@@ -22,7 +23,7 @@ def sped_vs_sefaz():
 
         comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
-        createRelatorio(comparacao)
+        createRelatorio(comparacao, cnpjs_de_entrada)
 
         msgbox('Relatório criado com sucesso na sua área de trabalho e já abri ele para você')
 
