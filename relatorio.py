@@ -94,6 +94,7 @@ def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
     html += '<table style="width:100%">'
     html += '<tr>'
     html += '<th>Número da nota</th>'
+    html += '<th>CFOPs</th>'
     html += '<th>Data</th>'
     html += '<th>Icms SEFAZ</th>'
     html += '<th>Icms SPED</th>'
@@ -102,9 +103,14 @@ def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
     for nota in notas_sefaz_e_sped:
         if nota['diferenca_icms'] == 0:
             continue
+        
+        cfops = nota['sped']['cfops']
+        cfops = cfops.strip()
+        cfops = cfops.replace(' ', ', ')
 
         html += '<tr>'
         html += '<td>{}</td>'.format(nota['sefaz']['Chave_NF-e'])
+        html += '<td>{}</td>'.format(cfops)
         html += '<td>{}</td>'.format(nota['sefaz']['dt_Emit'])
         html += '<td>{}</td>'.format(nota['icms_sefaz'])
         html += '<td>{}</td>'.format(nota['sped']['total_icms_produtos'])

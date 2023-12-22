@@ -63,7 +63,8 @@ def getNotasFromSped(arquivo_sped):
                 nota_atual = {
                     'numero': numero_nota,
                     'produtos': [],
-                    'total_icms_produtos': 0
+                    'total_icms_produtos': 0,
+                    'cfops': ''
                 }
 
                 is_nota_in_notas = list(filter(lambda nota: nota['numero'] == numero_nota, notas))
@@ -82,6 +83,7 @@ def getNotasFromSped(arquivo_sped):
                         'icms': icms
                     })
                     nota_atual['total_icms_produtos'] += round(float(icms.replace(',', '.')), 2)
+                    nota_atual['cfops'] += cfop + ' '
 
     return notas, cnpjs_de_entrada
 
