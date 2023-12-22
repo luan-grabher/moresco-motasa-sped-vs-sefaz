@@ -23,11 +23,9 @@ def getComparacaoSefazSped(notas_sefaz, notas_sped):
             diferenca_icms = round(icms_sefaz - nota_sped['total_icms_produtos'], 2)
             
             total_sefaz = float(nota_sefaz['Total_NF-e'].replace(',', '.'))
-            total_sefaz = round(total_sefaz + icms_sefaz, 2)
 
             total_sped = sum([float(produto['valor_total'].replace(',', '.')) for produto in nota_sped['produtos']])
             total_sped = round(total_sped, 2)
-            total_sped = round(total_sped + nota_sped['total_icms_produtos'], 2)
 
             diferenca_total = round(total_sefaz - total_sped, 2)
 
