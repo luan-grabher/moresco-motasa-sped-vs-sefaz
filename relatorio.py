@@ -1,4 +1,8 @@
 import os
+
+from easygui import msgbox
+import pandas as pd
+import openpyxl
 from comparativo import getComparacaoSefazSped
 
 from sefaz import getNotasFromSefaz
@@ -12,159 +16,147 @@ from sped import getNotasFromSped
     4. Com base no resultado do item 3, fazer a análise individual por nota do arquivo SPED buscando a nota com o CFOP/valor/ ICMS x Sefaz nota e valor ICMS – relação de notas
 '''
 
-def getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz):
-    html = '<h1>Notas SPED que não estão no SEFAZ</h1>'
-    html += '<table style="width:100%">'
-    html += '<tr>'
-    html += '<th>Número da nota</th>'
-    html += '</tr>'
-    for nota in notas_sped_que_nao_estao_no_sefaz:
-        html += '<tr>'
-        html += '<td>{}</td>'.format(nota['numero'])
-        html += '</tr>'
-
+def getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz) -> pd.DataFrame:
+    # Notas SPED que não estão no SEFAZ
+    
+    df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame()
+    df_notas_sped_que_nao_estao_no_sefaz['Número da nota'] = [nota['numero'] for nota in notas_sped_que_nao_estao_no_sefaz]
+    
     if len(notas_sped_que_nao_estao_no_sefaz) == 0:
-        html += '<tr>'
-        html += '<td>Nenhuma nota encontrada</td>'
-        html += '</tr>'
+        df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame({'Número da nota': ['Nenhuma nota encontrada']})
+    
+    
+    return df_notas_sped_que_nao_estao_no_sefaz
 
-    html += '</table>'
-
-    return html
-
-def getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped):
-    html = '<h1>Notas SEFAZ que não estão no SPED</h1>'
-    html += '<table style="width:100%">'
-    html += '<tr>'
-    html += '<th>Número da nota</th>'
-    html += '<th>Data</th>'
-    html += '<th>Valor</th>'
-    html += '<th>CNPJ do emitente</th>'
-    html += '</tr>'
-    for nota in notas_sefaz_que_nao_estao_no_sped:
-        html += '<tr>'
-        html += '<td>{}</td>'.format(nota['Chave_NF-e'])
-        html += '<td>{}</td>'.format(nota['dt_Emit'])
-        html += '<td>{}</td>'.format(nota['Total_NF-e'])
-        html += '<td>{}</td>'.format(nota['CNPJ_Emit'])
-        html += '</tr>'
+def getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped) -> pd.DataFrame:
+    # Notas SEFAZ que não estão no SPED
+    
+    df_notas_sefaz_que_nao_estao_no_sped = pd.DataFrame(
+        {
+            'Número da nota': [nota['Chave_NF-e'] for nota in notas_sefaz_que_nao_estao_no_sped],
+            'Data': [nota['dt_Emit'] for nota in notas_sefaz_que_nao_estao_no_sped],
+            'Valor': [nota['Total_NF-e'] for nota in notas_sefaz_que_nao_estao_no_sped],
+            'CNPJ do emitente': [nota['CNPJ_Emit'] for nota in notas_sefaz_que_nao_estao_no_sped]
+        }
+    )
     
     if len(notas_sefaz_que_nao_estao_no_sped) == 0:
-        html += '<tr>'
-        html += '<td>Nenhuma nota encontrada</td>'
-        html += '</tr>'
+        df_notas_sefaz_que_nao_estao_no_sped = pd.DataFrame(
+            {
+                'Número da nota': ['Nenhuma nota encontrada'],
+                'Data': [''],
+                'Valor': [''],
+                'CNPJ do emitente': ['']
+            }
+        )
+        
+    return df_notas_sefaz_que_nao_estao_no_sped
+
+def getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped) -> pd.DataFrame:
+    # Notas SEFAZ e SPED com divergência no total
     
-    html += '</table>'
+    df_notas_sefaz_e_sped = pd.DataFrame(
+        {
+            'Número da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'Data': [nota['sefaz']['dt_Emit'] for nota in notas_sefaz_e_sped],
+            'Valor SEFAZ': [nota['total_sefaz'] for nota in notas_sefaz_e_sped],
+            'Valor SPED': [nota['total_sped'] for nota in notas_sefaz_e_sped],
+            'Diferença': [nota['diferenca_total'] for nota in notas_sefaz_e_sped]
+        }
+    )
 
-    return html
-
-def getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped):
-    html = '<h1>Notas SEFAZ e SPED com divergência no total</h1>'
-    html += '<table style="width:100%">'
-    html += '<tr>'
-    html += '<th>Número da nota</th>'
-    html += '<th>Data</th>'
-    html += '<th>Valor SEFAZ</th>'
-    html += '<th>Valor SPED</th>'
-    html += '<th>Diferença</th>'
-    html += '</tr>'
-    for nota in notas_sefaz_e_sped:
-        if nota['diferenca_total'] == 0:
-            continue
-
-        html += '<tr>'
-        html += '<td>{}</td>'.format(nota['sefaz']['Chave_NF-e'])
-        html += '<td>{}</td>'.format(nota['sefaz']['dt_Emit'])
-        html += '<td>{}</td>'.format(nota['total_sefaz'])
-        html += '<td>{}</td>'.format(nota['total_sped'])
-        html += '<td>{}</td>'.format(nota['diferenca_total'])
-        html += '</tr>'
+    # Remove notas que não possuem divergência
+    df_notas_sefaz_e_sped = df_notas_sefaz_e_sped[df_notas_sefaz_e_sped['Diferença'] != 0]
     
-    if len(notas_sefaz_e_sped) == 0:
-        html += '<tr>'
-        html += '<td>Nenhuma nota encontrada</td>'
-        html += '</tr>'
-    
-    html += '</table>'
-
-    return html
+    if df_notas_sefaz_e_sped.empty:
+        df_notas_sefaz_e_sped = pd.DataFrame(
+            {
+                'Número da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no total'],
+                'Data': [''],
+                'Valor SEFAZ': [''],
+                'Valor SPED': [''],
+                'Diferença': ['']
+            }
+        )
+        
+    return df_notas_sefaz_e_sped
 
 def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
-    html = '<h1>Notas SEFAZ e SPED com divergência no ICMS</h1>'
-    html += '<table style="width:100%">'
-    html += '<tr>'
-    html += '<th>Número da nota</th>'
-    html += '<th>CFOPs</th>'
-    html += '<th>Data</th>'
-    html += '<th>Icms SEFAZ</th>'
-    html += '<th>Icms SPED</th>'
-    html += '<th>Diferença</th>'
-    html += '</tr>'
-    for nota in notas_sefaz_e_sped:
-        if nota['diferenca_icms'] == 0:
-            continue
+    # Notas SEFAZ e SPED com divergência no ICMS
+    
+    df_notas_sefaz_e_sped = pd.DataFrame(
+        {
+            'Número da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'CFOPs': [nota['sped']['cfops'].strip().replace(' ', ', ') for nota in notas_sefaz_e_sped],
+            'Data': [nota['sefaz']['dt_Emit'] for nota in notas_sefaz_e_sped],
+            'Icms SEFAZ': [nota['icms_sefaz'] for nota in notas_sefaz_e_sped],
+            'Icms SPED': [nota['sped']['total_icms_produtos'] for nota in notas_sefaz_e_sped],
+            'Diferença': [nota['diferenca_icms'] for nota in notas_sefaz_e_sped]
+        }
+    )
+    
+    # Remove notas que não possuem divergência
+    df_notas_sefaz_e_sped = df_notas_sefaz_e_sped[df_notas_sefaz_e_sped['Diferença'] != 0]
+    
+    if df_notas_sefaz_e_sped.empty:
+        df_notas_sefaz_e_sped = pd.DataFrame(
+            {
+                'Número da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no ICMS'],
+                'CFOPs': [''],
+                'Data': [''],
+                'Icms SEFAZ': [''],
+                'Icms SPED': [''],
+                'Diferença': ['']
+            }
+        )
         
-        cfops = nota['sped']['cfops']
-        cfops = cfops.strip()
-        cfops = cfops.replace(' ', ', ')
+    return df_notas_sefaz_e_sped
 
-        html += '<tr>'
-        html += '<td>{}</td>'.format(nota['sefaz']['Chave_NF-e'])
-        html += '<td>{}</td>'.format(cfops)
-        html += '<td>{}</td>'.format(nota['sefaz']['dt_Emit'])
-        html += '<td>{}</td>'.format(nota['icms_sefaz'])
-        html += '<td>{}</td>'.format(nota['sped']['total_icms_produtos'])
-        html += '<td>{}</td>'.format(nota['diferenca_icms'])
-        html += '</tr>'
-    
-    if len(notas_sefaz_e_sped) == 0:
-        html += '<tr>'
-        html += '<td>Nenhuma nota encontrada</td>'
-        html += '</tr>'
-    
-    html += '</table>'
-
-    return html
+def auto_adjust_column_width(writer, sheet_name, dataframe):
+    worksheet = writer.sheets[sheet_name]
+    for col in dataframe.columns:
+        max_length = max(dataframe[col].astype(str).map(len).max(), len(col))
+        col_idx = dataframe.columns.get_loc(col) + 1
+        worksheet.column_dimensions[openpyxl.utils.get_column_letter(col_idx)].width = max_length + 2
 
 def createRelatorio(comparacao, cnpjs_de_entrada):
     notas_sped_que_nao_estao_no_sefaz = comparacao['notas_sped_que_nao_estao_no_sefaz']
     notas_sefaz_que_nao_estao_no_sped = comparacao['notas_sefaz_que_nao_estao_no_sped']
     notas_sefaz_e_sped = comparacao['notas_sefaz_e_sped']
-
-    html = '<html>'
-    html += '<head>'
-    html += '<style>'
-    html += 'table, th, td {'
-    html += 'border: 1px solid black;'
-    html += 'border-collapse: collapse;'
-    html += '}'
-    html += 'th, td {'
-    html += 'padding: 5px;'
-    html += '}'
-    html += '</style>'
-    html += '</head>'
-    html += '<body>'
-
-    html += getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz)
-    html += getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped)
-    html += getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped)
-    html += getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped)
-
-    html += '</body>'
-    html += '</html>'
     
-    nome_relatorio = 'relatorio_comparativo_sefaz_sped.html'
-    desktop = os.path.join(os.path.join(os.environ['USERPROFILE']), 'Desktop')
-    arquivo_relatorio = os.path.join(desktop, nome_relatorio)
-    with open(arquivo_relatorio, 'w') as arquivo:
-        arquivo.write(html)
+    df_notas_sped_que_nao_estao_no_sefaz = getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz)
+    df_notas_sefaz_que_nao_estao_no_sped = getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped)
+    df_divergencia_total = getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped)
+    df_divergencia_icms = getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped)
+
+    user_folder = os.path.expanduser('~')
+    desktop_path = os.path.join(user_folder, 'Desktop')
+    relatorio_path = os.path.join(desktop_path, 'relatorio_comparativo_sefaz_sped.xlsx')
+    
+    try:
+        os.remove(relatorio_path)
+    except: # noqa
+        msgbox('Não foi possível criar o relatório na sua área de trabalho. Verifique se o arquivo não está aberto e tente novamente.')
+        return
+    
+    with pd.ExcelWriter(relatorio_path) as writer:
+        df_notas_sped_que_nao_estao_no_sefaz.to_excel(writer, sheet_name='NF SPED fora do SEFAZ', index=False)
+        df_notas_sefaz_que_nao_estao_no_sped.to_excel(writer, sheet_name='NF SEFAZ fora do SPED', index=False)
+        df_divergencia_total.to_excel(writer, sheet_name='Divergência total', index=False)
+        df_divergencia_icms.to_excel(writer, sheet_name='Divergência ICMS', index=False)
+        
+        auto_adjust_column_width(writer, 'NF SPED fora do SEFAZ', df_notas_sped_que_nao_estao_no_sefaz)
+        auto_adjust_column_width(writer, 'NF SEFAZ fora do SPED', df_notas_sefaz_que_nao_estao_no_sped)
+        auto_adjust_column_width(writer, 'Divergência total', df_divergencia_total)
+        auto_adjust_column_width(writer, 'Divergência ICMS', df_divergencia_icms)
+        
 
     #open file
-    os.startfile(arquivo_relatorio)    
+    os.startfile(relatorio_path)
 
 
 if __name__ == '__main__':
-    arquivo_teste_sefaz = './downloads/sefaz.txt'
+    arquivo_teste_sefaz = './downloads/sefaz.3.txt'
     arquivo_teste_sped = './downloads/sped_teste.txt'
 
     notas_sefaz = getNotasFromSefaz(arquivo_teste_sefaz)
@@ -172,7 +164,7 @@ if __name__ == '__main__':
 
     comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
-    createRelatorio(comparacao)
+    createRelatorio(comparacao, None)
     
 
 
