@@ -20,7 +20,7 @@ def getArquivoSefazFromUser(selecionar_pasta = False):
     else:
         msgbox('Selecione a pasta com os arquivos txt do relatório do SEFAZ de entradas ou Saidas')
 
-        path_pasta_com_Arquivos = diropenbox(msg='Selecione a pasta com os arquivos txt do relatório do SEFAZ de entradas ou Saidas',
+        path_pasta_com_Arquivos = diropenbox(msg='Selecione a pasta com os arquivos txt do relatório do SEFAZ de entradas ou Saidas.\nOs arquivos devem ser .txt e possuir "sefaz" no nome.',
                         title='Relatório txt do SEFAZ')
         
         if not path_pasta_com_Arquivos:
