@@ -10,12 +10,12 @@ def sped_vs_sefaz():
         arquivo_sefaz = getArquivoSefazFromUser(selecionar_pasta=True)
         if not arquivo_sefaz:
             msgbox('Nenhum arquivo SEFAZ selecionado')
-            exit()
+            return
 
         arquivo_sped = getArquivoSpedFromUser()
         if not arquivo_sped:
             msgbox('Nenhum arquivo SPED selecionado')
-            exit()
+            return
 
         notas_sefaz = getNotasFromSefaz(arquivo_sefaz)
         notas_sped, cnpjs_de_entrada = getNotasFromSped(arquivo_sped)
@@ -30,7 +30,7 @@ def sped_vs_sefaz():
         msgbox('Ocorreu um erro inesperado, verifique o log para mais detalhes')
         print(traceback.format_exc())
         input('Pressione qualquer tecla para sair')
-        exit()
+        return
 
 if __name__ == '__main__':
     sped_vs_sefaz()

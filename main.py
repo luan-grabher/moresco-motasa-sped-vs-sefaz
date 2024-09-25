@@ -1,9 +1,11 @@
 try:
     import os
 
+    '''
     os.system('python -m pip install --upgrade pip')
     os.system('pip install -r requirements.txt')
     os.system('cls')
+    '''
 
     try:
         from sped_vs_sefaz import sped_vs_sefaz
