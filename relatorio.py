@@ -152,7 +152,8 @@ def createRelatorio(comparacao, cnpjs_de_entrada):
     relatorio_path = os.path.join(desktop_path, 'relatorio_comparativo_sefaz_sped.xlsx')
     
     try:
-        os.remove(relatorio_path)
+        if os.path.exists(relatorio_path):
+            os.remove(relatorio_path)
     except: # noqa
         msgbox('Não foi possível criar o relatório na sua área de trabalho. Verifique se o arquivo não está aberto e tente novamente.')
         return
