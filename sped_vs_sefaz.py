@@ -22,9 +22,7 @@ def sped_vs_sefaz():
 
         comparacao = getComparacaoSefazSped(notas_sefaz, notas_sped)
 
-        createRelatorio(comparacao, cnpjs_de_entrada)
-
-        msgbox('Relatório criado com sucesso na sua área de trabalho e já abri ele para você')
+        createRelatorio(comparacao, cnpjs_de_entrada)        
 
     except Exception as e:
         msgbox('Ocorreu um erro inesperado, verifique o log para mais detalhes')

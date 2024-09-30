@@ -131,6 +131,24 @@ def createRelatorio(comparacao, cnpjs_de_entrada):
 
     user_folder = os.path.expanduser('~')
     desktop_path = os.path.join(user_folder, 'Desktop')
+
+    desktop_onedrive_path = os.path.join(user_folder, 'OneDrive', 'Ambiente de Trabalho')
+    documentos_path = os.path.join(user_folder, 'Documents')
+    windows_temp_path = os.path.join('C:', os.sep, 'Windows', 'Temp')
+
+    if not os.path.exists(desktop_path) and os.path.exists(desktop_onedrive_path):
+        desktop_path = desktop_onedrive_path
+        
+    if not os.path.exists(desktop_path) and os.path.exists(documentos_path):
+        desktop_path = documentos_path
+        
+    if not os.path.exists(desktop_path) and os.path.exists(windows_temp_path):
+        desktop_path = windows_temp_path
+        
+    if not os.path.exists(desktop_path):
+        msgbox('Não foi possível encontrar a sua área de trabalho. Por favor certifique-se de que a pasta "Desktop" existe na sua pasta de usuário e tente novamente.')
+        return
+    
     relatorio_path = os.path.join(desktop_path, 'relatorio_comparativo_sefaz_sped.xlsx')
     
     try:
@@ -153,6 +171,8 @@ def createRelatorio(comparacao, cnpjs_de_entrada):
 
     #open file
     os.startfile(relatorio_path)
+    
+    msgbox('Relatório criado com sucesso e já abri ele para você. Ele está localizado na pasta: \n\n' + relatorio_path)
 
 
 if __name__ == '__main__':
