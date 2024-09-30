@@ -20,10 +20,10 @@ def getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz) -> pd
     # Notas SPED que não estão no SEFAZ
     
     df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame()
-    df_notas_sped_que_nao_estao_no_sefaz['Número da nota'] = [nota['numero'] for nota in notas_sped_que_nao_estao_no_sefaz]
+    df_notas_sped_que_nao_estao_no_sefaz['Chave da nota'] = [nota['numero'] for nota in notas_sped_que_nao_estao_no_sefaz]
     
     if len(notas_sped_que_nao_estao_no_sefaz) == 0:
-        df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame({'Número da nota': ['Nenhuma nota encontrada']})
+        df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame({'Chave da nota': ['Nenhuma nota encontrada']})
     
     
     return df_notas_sped_que_nao_estao_no_sefaz
@@ -33,7 +33,8 @@ def getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped) -> pd
     
     df_notas_sefaz_que_nao_estao_no_sped = pd.DataFrame(
         {
-            'Número da nota': [nota['Chave_NF-e'] for nota in notas_sefaz_que_nao_estao_no_sped],
+            'Chave da nota': [nota['Chave_NF-e'] for nota in notas_sefaz_que_nao_estao_no_sped],
+            'Número da nota': [nota['Numero'] for nota in notas_sefaz_que_nao_estao_no_sped],
             'Data': [nota['dt_Emit'] for nota in notas_sefaz_que_nao_estao_no_sped],
             'Valor': [nota['Total_NF-e'] for nota in notas_sefaz_que_nao_estao_no_sped],
             'CNPJ do emitente': [nota['CNPJ_Emit'] for nota in notas_sefaz_que_nao_estao_no_sped]
@@ -43,7 +44,8 @@ def getTableNotasSefazQueNaoEstaoNoSped(notas_sefaz_que_nao_estao_no_sped) -> pd
     if len(notas_sefaz_que_nao_estao_no_sped) == 0:
         df_notas_sefaz_que_nao_estao_no_sped = pd.DataFrame(
             {
-                'Número da nota': ['Nenhuma nota encontrada'],
+                'Chave da nota': ['Nenhuma nota encontrada'],
+                'Número da nota': [''],
                 'Data': [''],
                 'Valor': [''],
                 'CNPJ do emitente': ['']
@@ -57,7 +59,8 @@ def getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped) -> pd.DataFrame:
     
     df_notas_sefaz_e_sped = pd.DataFrame(
         {
-            'Número da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'Chave da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'Número da nota': [nota['sefaz']['Numero'] for nota in notas_sefaz_e_sped],
             'Data': [nota['sefaz']['dt_Emit'] for nota in notas_sefaz_e_sped],
             'Valor SEFAZ': [nota['total_sefaz'] for nota in notas_sefaz_e_sped],
             'Valor SPED': [nota['total_sped'] for nota in notas_sefaz_e_sped],
@@ -71,7 +74,8 @@ def getTableNotasSefazESpedDivergenciaTotal(notas_sefaz_e_sped) -> pd.DataFrame:
     if df_notas_sefaz_e_sped.empty:
         df_notas_sefaz_e_sped = pd.DataFrame(
             {
-                'Número da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no total'],
+                'Chave da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no total'],
+                'Número da nota': [''],
                 'Data': [''],
                 'Valor SEFAZ': [''],
                 'Valor SPED': [''],
@@ -86,7 +90,8 @@ def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
     
     df_notas_sefaz_e_sped = pd.DataFrame(
         {
-            'Número da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'Chave da nota': [nota['sefaz']['Chave_NF-e'] for nota in notas_sefaz_e_sped],
+            'Número da nota': [nota['sefaz']['Numero'] for nota in notas_sefaz_e_sped],
             'CFOPs': [nota['sped']['cfops'].strip().replace(' ', ', ') for nota in notas_sefaz_e_sped],
             'Data': [nota['sefaz']['dt_Emit'] for nota in notas_sefaz_e_sped],
             'Icms SEFAZ': [nota['icms_sefaz'] for nota in notas_sefaz_e_sped],
@@ -101,7 +106,8 @@ def getTableNotasSefazESpedDivergenciaIcms(notas_sefaz_e_sped):
     if df_notas_sefaz_e_sped.empty:
         df_notas_sefaz_e_sped = pd.DataFrame(
             {
-                'Número da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no ICMS'],
+                'Chave da nota': ['Nenhuma nota que está no SEFAZ e no SPED e possui divergência no ICMS'],
+                'Número da nota': [''],
                 'CFOPs': [''],
                 'Data': [''],
                 'Icms SEFAZ': [''],
