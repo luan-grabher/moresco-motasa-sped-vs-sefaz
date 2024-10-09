@@ -25,7 +25,9 @@ def getNotasFromSped(arquivo_sped):
 
     coluna_codigo_linha = 1
     coluna_tipo_nota = 2
+    coluna_nf = 8
     coluna_numero_nota = 9
+    coluna_data = 10
     coluna_cfop = 3
     coluna_valor_total = 5
     coluna_icms = 7
@@ -47,6 +49,7 @@ def getNotasFromSped(arquivo_sped):
                 tipo_nota = colunas[coluna_tipo_nota] if len(colunas) > coluna_tipo_nota else None
                 is_nota_entrada = tipo_nota == '0'
                 cnpj_from_numero_nota = numero_nota[6:20]
+                cnpj_formatado = cnpj_from_numero_nota[0:2] + '.' + cnpj_from_numero_nota[2:5] + '.' + cnpj_from_numero_nota[5:8] + '/' + cnpj_from_numero_nota[8:12] + '-' + cnpj_from_numero_nota[12:14]
 
                 if is_nota_entrada and cnpj_from_numero_nota not in cnpjs_de_entrada:
                     is_cnpj_in_cnpjs_de_entrada = list(filter(lambda cnpj: cnpj == cnpj_from_numero_nota, cnpjs_de_entrada))
@@ -58,13 +61,21 @@ def getNotasFromSped(arquivo_sped):
                     else:
                         cnpj_de_entrada = is_cnpj_in_cnpjs_de_entrada[0]
                         cnpj_de_entrada['notas'].append(numero_nota)       
+                        
+                data = colunas[coluna_data] if len(colunas) > coluna_data else None
+                if data:
+                    data = data[0:2] + '/' + data[2:4] + '/' + data[4:8]
                 
 
                 nota_atual = {
                     'numero': numero_nota,
+                    'nf': colunas[coluna_nf] if len(colunas) > coluna_nf else None,
+                    'data': data,
                     'produtos': [],
                     'total_icms_produtos': 0,
-                    'cfops': ''
+                    'total_dos_produtos': 0,
+                    'cfops': '',
+                    'cnpj': cnpj_formatado
                 }
 
                 is_nota_in_notas = list(filter(lambda nota: nota['numero'] == numero_nota, notas))
@@ -83,7 +94,8 @@ def getNotasFromSped(arquivo_sped):
                         'icms': icms
                     })
                     nota_atual['total_icms_produtos'] += round(float(icms.replace(',', '.')), 2)
-                    nota_atual['cfops'] += cfop + ' '
+                    nota_atual['total_dos_produtos'] += round(float(valor_total.replace(',', '.')), 2)
+                    nota_atual['cfops'] += (', ' if nota_atual['cfops'] else '') + cfop
 
     return notas, cnpjs_de_entrada
 

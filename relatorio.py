@@ -19,11 +19,21 @@ from sped import getNotasFromSped
 def getTableNotasSpedQueNaoEstaoNoSefaz(notas_sped_que_nao_estao_no_sefaz) -> pd.DataFrame:
     # Notas SPED que não estão no SEFAZ
     
-    df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame()
-    df_notas_sped_que_nao_estao_no_sefaz['Chave da nota'] = [nota['numero'] for nota in notas_sped_que_nao_estao_no_sefaz]
+    df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame(
+        {
+            'Chave da nota': [nota['numero'] for nota in notas_sped_que_nao_estao_no_sefaz],
+            'Número da nota': [nota['nf'] for nota in notas_sped_que_nao_estao_no_sefaz],
+            'Data': [nota['data'] for nota in notas_sped_que_nao_estao_no_sefaz],
+            'CFOPs': [nota['cfops'] for nota in notas_sped_que_nao_estao_no_sefaz],
+            'Valor': [nota['total_dos_produtos'] for nota in notas_sped_que_nao_estao_no_sefaz],
+            'CNPJ do emitente': [nota['cnpj'] for nota in notas_sped_que_nao_estao_no_sefaz]
+        }
+    )
     
     if len(notas_sped_que_nao_estao_no_sefaz) == 0:
-        df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame({'Chave da nota': ['Nenhuma nota encontrada']})
+        df_notas_sped_que_nao_estao_no_sefaz = pd.DataFrame({
+            'Chave da nota': ['Nenhuma nota encontrada']
+        })
     
     
     return df_notas_sped_que_nao_estao_no_sefaz
